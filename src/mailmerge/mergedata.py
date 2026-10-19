@@ -95,7 +95,11 @@ class MergeData:
 
     @classmethod
     def _get_field_type(cls, instr):
-        s = shlex.split(instr, posix=False)
+        try:
+            s = shlex.split(instr, posix=False)
+        except ValueError:
+            # unbalanced quotes, e.g. DATE \@"MMMM d', 'yyyy"; only the field type is needed here
+            s = instr.split()
         # For elements with no instr, otherwise this will throw an exception
         if len(s) > 0:
             return s[0], s[1:]
